@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: java-api
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${PSQL_HOST}:${PSQL_EXTERNAL_PORT}/${PSQL_DATABASE}
+    username: ${PSQL_USER}
+    password: ${PSQL_PASSWORD}
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_EXTERNAL_PORT:6379}
+      password: ${REDIS_PASSWORD}
+      connect-timeout: 2s
+
+server:
+  port: ${JAVA_API_PORT}
