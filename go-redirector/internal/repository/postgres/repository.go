@@ -5,7 +5,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"github.com/uallace-macedo/url-shortner/go-redirector/model"
+	"github.com/uallace-macedo/url-shortner/go-redirector/internal/model"
 )
 
 type PostgresRepository interface {

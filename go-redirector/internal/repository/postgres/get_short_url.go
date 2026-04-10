@@ -2,15 +2,17 @@ package postgres
 
 import (
 	"context"
+	"log"
 
-	"github.com/uallace-macedo/url-shortner/go-redirector/model"
+	"github.com/uallace-macedo/url-shortner/go-redirector/internal/model"
 )
 
 func (r *postgresRepository) GetShortUrl(ctx context.Context, shortUrl string) (*model.UrlModel, error) {
+	log.Println("GET SHORT URL: ", shortUrl)
 	query := `
 		SELECT id, url, short_url
 		FROM urls
-		WHERE short_url = ?
+		WHERE short_url = $1
 	`
 
 	var url model.UrlModel
