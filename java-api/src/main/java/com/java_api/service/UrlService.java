@@ -1,8 +1,6 @@
 package com.java_api.service;
 
 import com.java_api.utils.Base62Converter;
-import com.java_api.dto.url.UrlDTO;
-import com.java_api.mapper.UrlMapper;
 import com.java_api.model.Url;
 import com.java_api.repository.UrlRepository;
 import org.springframework.stereotype.Service;
@@ -19,9 +17,9 @@ public class UrlService {
     private final EntityManager entityManager;
 
     @Transactional
-    public UrlDTO create(String url) {
+    public Url create(String url) {
         Optional<Url> exists = urlRepository.findByUrl(url);
-        if(exists.isPresent()) return UrlMapper.toDTO(exists.get());
+        if(exists.isPresent()) return exists.get();
 
         long id = ((Number) entityManager
                 .createNativeQuery("SELECT nextval('url_seq')")
@@ -31,6 +29,6 @@ public class UrlService {
         Url newUrl = new Url(id, url, shortUrl, null);
         urlRepository.save(newUrl);
 
-        return UrlMapper.toDTO(newUrl);
+        return newUrl;
     }
 }

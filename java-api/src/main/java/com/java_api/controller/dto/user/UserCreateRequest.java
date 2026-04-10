@@ -1,4 +1,4 @@
-package com.java_api.dto.user;
+package com.java_api.controller.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

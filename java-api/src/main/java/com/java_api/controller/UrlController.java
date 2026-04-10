@@ -1,7 +1,8 @@
 package com.java_api.controller;
 
-import com.java_api.dto.url.UrlDTO;
-import com.java_api.dto.url.UrlRequestDTO;
+import com.java_api.controller.dto.url.UrlDTO;
+import com.java_api.controller.dto.url.UrlRequestDTO;
+import com.java_api.controller.mapper.UrlMapper;
 import com.java_api.service.UrlService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -18,14 +19,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UrlController {
     private final UrlService urlService;
-
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<UrlDTO> create(@Valid @RequestBody UrlRequestDTO urlRequestDTO) {
-        UrlDTO createdUrl = urlService.create(urlRequestDTO.url());
+        UrlDTO createdUrl = UrlMapper.toDTO(urlService.create(urlRequestDTO.url()));
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUrl);
     }
-
 }

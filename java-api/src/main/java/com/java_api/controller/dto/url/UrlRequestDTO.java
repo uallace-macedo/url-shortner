@@ -1,4 +1,4 @@
-package com.java_api.dto.url;
+package com.java_api.controller.dto.url;
 
 import jakarta.validation.constraints.NotBlank;
 

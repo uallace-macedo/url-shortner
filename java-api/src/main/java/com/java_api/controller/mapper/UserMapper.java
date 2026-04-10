@@ -1,6 +1,6 @@
-package com.java_api.mapper;
+package com.java_api.controller.mapper;
 
-import com.java_api.dto.user.UserDTO;
+import com.java_api.controller.dto.user.UserDTO;
 import com.java_api.model.User;
 
 public class UserMapper {

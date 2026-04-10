@@ -1,6 +1,6 @@
-package com.java_api.mapper;
+package com.java_api.controller.mapper;
 
-import com.java_api.dto.url.UrlDTO;
+import com.java_api.controller.dto.url.UrlDTO;
 import com.java_api.model.Url;
 
 public class UrlMapper {
