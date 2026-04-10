@@ -15,11 +15,11 @@ type Logger struct {
 }
 
 const (
-	reset  = "\033m[0m"
-	red    = "\033m[31m"
-	green  = "\033m[32m"
-	yellow = "\033m[33m"
-	blue   = "\033m[34m"
+	reset  = "\033[0m"
+	red    = "\033[31m"
+	green  = "\033[32m"
+	yellow = "\033[33m"
+	blue   = "\033[34m"
 )
 
 func NewLogger(p string) *Logger {
@@ -49,6 +49,7 @@ func (l *Logger) Warning(v ...any) {
 
 func (l *Logger) Error(v ...any) {
 	l.err.Println(v...)
+	os.Exit(1)
 }
 
 func (l *Logger) Debugf(fmts string, v ...any) {
@@ -65,4 +66,5 @@ func (l *Logger) Warningf(fmts string, v ...any) {
 
 func (l *Logger) Errorf(fmts string, v ...any) {
 	l.err.Printf(fmts, v...)
+	os.Exit(1)
 }
