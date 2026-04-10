@@ -3,8 +3,11 @@ package com.java_api.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
-@Table(name = "url")
+@Table(name = "urls")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -26,4 +29,7 @@ public class Url {
 
     @Column(name = "short_url", unique = true)
     private String shortUrl;
+
+    @ManyToMany(mappedBy = "urls")
+    private List<User> users = new ArrayList<>();
 }

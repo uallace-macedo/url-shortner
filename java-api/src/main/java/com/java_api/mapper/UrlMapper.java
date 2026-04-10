@@ -1,6 +1,6 @@
 package com.java_api.mapper;
 
-import com.java_api.dto.UrlDTO;
+import com.java_api.dto.url.UrlDTO;
 import com.java_api.model.Url;
 
 public class UrlMapper {
@@ -16,7 +16,8 @@ public class UrlMapper {
         return new Url(
                 urlDTO.id(),
                 urlDTO.url(),
-                urlDTO.shortUrl()
+                urlDTO.shortUrl(),
+                null
         );
     }
 }
