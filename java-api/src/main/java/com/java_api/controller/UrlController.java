@@ -1,7 +1,7 @@
 package com.java_api.controller;
 
-import com.java_api.dto.UrlDTO;
-import com.java_api.dto.UrlRequestDTO;
+import com.java_api.dto.url.UrlDTO;
+import com.java_api.dto.url.UrlRequestDTO;
 import com.java_api.service.UrlService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

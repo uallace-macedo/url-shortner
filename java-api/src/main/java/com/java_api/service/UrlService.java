@@ -1,7 +1,7 @@
 package com.java_api.service;
 
 import com.java_api.utils.Base62Converter;
-import com.java_api.dto.UrlDTO;
+import com.java_api.dto.url.UrlDTO;
 import com.java_api.mapper.UrlMapper;
 import com.java_api.model.Url;
 import com.java_api.repository.UrlRepository;
@@ -28,7 +28,7 @@ public class UrlService {
                 .getSingleResult()).longValue();
 
         String shortUrl = Base62Converter.GenerateShortURL(id);
-        Url newUrl = new Url(id, url, shortUrl);
+        Url newUrl = new Url(id, url, shortUrl, null);
         urlRepository.save(newUrl);
 
         return UrlMapper.toDTO(newUrl);
