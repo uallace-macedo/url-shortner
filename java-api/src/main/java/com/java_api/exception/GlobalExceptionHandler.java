@@ -1,5 +1,6 @@
 package com.java_api.exception;
 
+import com.java_api.exception.custom.UserEmailAlreadyTaken;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -25,6 +26,17 @@ public class GlobalExceptionHandler {
         ExceptionResponse response = new ExceptionResponse(
                 LocalDateTime.now(),
                 errors,
+                wr.getDescription(false)
+        );
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(UserEmailAlreadyTaken.class)
+    public ResponseEntity<ExceptionResponse> handleInternalExceptions(UserEmailAlreadyTaken ex, WebRequest wr) {
+        ExceptionResponse response = new ExceptionResponse(
+                LocalDateTime.now(),
+                Collections.singletonList(ex.getMessage()),
                 wr.getDescription(false)
         );
 
