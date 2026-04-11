@@ -19,3 +19,8 @@ spring:
 
 server:
   port: ${JAVA_API_PORT}
+
+api:
+  security:
+    token:
+      secret: ${JAVA_JWT_SECRET:secret_jwt}
