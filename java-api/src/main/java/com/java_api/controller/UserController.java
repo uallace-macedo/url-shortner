@@ -60,8 +60,15 @@ public class UserController {
                 .maxAge(0)
                 .build();
 
+        ResponseCookie csrfCookie = ResponseCookie.from("XSRF-TOKEN", "")
+                .httpOnly(false)
+                .path("/")
+                .maxAge(0)
+                .build();
+
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .header(HttpHeaders.SET_COOKIE, csrfCookie.toString())
                 .build();
     }
 }
