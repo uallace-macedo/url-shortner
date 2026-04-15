@@ -1,15 +1,23 @@
 package com.java_api.controller;
 
-import com.java_api.controller.dto.user.UserCreateRequest;
+import com.java_api.controller.dto.user.UserRegisterRequest;
 import com.java_api.controller.dto.user.UserDTO;
+import com.java_api.controller.dto.user.UserLoginRequest;
 import com.java_api.controller.mapper.UserMapper;
 import com.java_api.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -17,8 +25,26 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping
-    public UserDTO create(@Valid @RequestBody UserCreateRequest userData) {
-        return UserMapper.toDTO(userService.create(userData));
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@Valid @RequestBody UserRegisterRequest registerData) {
+        UserDTO userDTO = UserMapper.toDTO(userService.register(registerData));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequest loginData) {
+        UserDTO userDTO = UserMapper.toDTO(userService.login(loginData));
+
+        ResponseCookie cookie = ResponseCookie.from("accessToken", "")
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(Duration.ofHours(2))
+                .sameSite("Lax")
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .build();
     }
 }
