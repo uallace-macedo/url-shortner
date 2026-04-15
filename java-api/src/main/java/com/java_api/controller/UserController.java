@@ -4,6 +4,8 @@ import com.java_api.controller.dto.user.UserRegisterRequest;
 import com.java_api.controller.dto.user.UserDTO;
 import com.java_api.controller.dto.user.UserLoginRequest;
 import com.java_api.controller.mapper.UserMapper;
+import com.java_api.infra.security.TokenService;
+import com.java_api.model.User;
 import com.java_api.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final TokenService tokenService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody UserRegisterRequest registerData) {
@@ -33,14 +36,28 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody UserLoginRequest loginData) {
-        UserDTO userDTO = UserMapper.toDTO(userService.login(loginData));
+        User user = userService.login(loginData);
+        String token = tokenService.generateToken(user);
 
-        ResponseCookie cookie = ResponseCookie.from("accessToken", "")
+        ResponseCookie cookie = ResponseCookie.from("accessToken", token)
                 .httpOnly(true)
                 .secure(false)
                 .path("/")
                 .maxAge(Duration.ofHours(2))
                 .sameSite("Lax")
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .build();
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout() {
+        ResponseCookie cookie = ResponseCookie.from("accessToken", "")
+                .httpOnly(true)
+                .path("/")
+                .maxAge(0)
                 .build();
 
         return ResponseEntity.ok()
