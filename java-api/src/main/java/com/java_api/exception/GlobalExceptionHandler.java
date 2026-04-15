@@ -1,14 +1,15 @@
 package com.java_api.exception;
 
-import com.java_api.exception.custom.UserEmailAlreadyTaken;
+import com.java_api.exception.custom.UserEmailAlreadyTakenException;
+import com.java_api.exception.custom.WrongCredentialsException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -32,8 +33,30 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(response);
     }
 
-    @ExceptionHandler(UserEmailAlreadyTaken.class)
-    public ResponseEntity<ExceptionResponse> handleInternalExceptions(UserEmailAlreadyTaken ex, WebRequest wr) {
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ExceptionResponse> handleHttpMessageNotReadableExceptions(HttpMessageNotReadableException ex, WebRequest wr) {
+        ExceptionResponse response = new ExceptionResponse(
+                LocalDateTime.now(),
+                Collections.singletonList("Invalid request body"),
+                wr.getDescription(false)
+        );
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(UserEmailAlreadyTakenException.class)
+    public ResponseEntity<ExceptionResponse> handleInternalExceptions(UserEmailAlreadyTakenException ex, WebRequest wr) {
+        ExceptionResponse response = new ExceptionResponse(
+                LocalDateTime.now(),
+                Collections.singletonList(ex.getMessage()),
+                wr.getDescription(false)
+        );
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(WrongCredentialsException.class)
+    public ResponseEntity<ExceptionResponse> handleWrongCredentialsExceptions(WrongCredentialsException ex, WebRequest wr) {
         ExceptionResponse response = new ExceptionResponse(
                 LocalDateTime.now(),
                 Collections.singletonList(ex.getMessage()),
