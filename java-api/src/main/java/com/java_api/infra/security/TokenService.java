@@ -1,4 +1,4 @@
-package com.java_api.service.security;
+package com.java_api.infra.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -16,34 +16,34 @@ import java.time.ZoneOffset;
 public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
-
+    
     public String generateToken(User user) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.create()
                     .withIssuer("java-api")
+                    .withExpiresAt(getExpiresAt())
                     .withSubject(user.getEmail())
-                    .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
-        } catch (JWTCreationException e) {
-            throw new RuntimeException("Error while generating token: ", e);
+        } catch(JWTCreationException e) {
+            throw new RuntimeException(e);
         }
     }
 
     public String validateToken(String token) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(token);
+            Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.require(algorithm)
                     .withIssuer("java-api")
                     .build()
                     .verify(token)
                     .getSubject();
-        } catch (JWTVerificationException e) {
-            return "";
+        } catch(JWTVerificationException e) {
+            return null;
         }
     }
-
-    private Instant genExpirationDate() {
+    
+    private Instant getExpiresAt() {
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
 }
