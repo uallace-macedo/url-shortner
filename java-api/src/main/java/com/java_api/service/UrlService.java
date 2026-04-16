@@ -1,5 +1,11 @@
 package com.java_api.service;
 
+import com.java_api.exception.custom.InvalidUrlExpiresAtException;
+import com.java_api.exception.custom.SlugAlreadyCreatedException;
+import com.java_api.exception.custom.SlugAlreadyExistsException;
+import com.java_api.exception.custom.UserNotFoundException;
+import com.java_api.model.User;
+import com.java_api.repository.UserRepository;
 import com.java_api.utils.Base62Converter;
 import com.java_api.model.Url;
 import com.java_api.repository.UrlRepository;
@@ -8,27 +14,56 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class UrlService {
     private final UrlRepository urlRepository;
+    private final UserRepository userRepository;
     private final EntityManager entityManager;
 
     @Transactional
-    public Url create(String url) {
-        Optional<Url> exists = urlRepository.findByUrl(url);
-        if(exists.isPresent()) return exists.get();
+    public Url create(UUID userId, Url url) {
+        Optional<Url> exists = urlRepository.findByUrlAndUserId(url.getUrl(), userId);
+        if(exists.isPresent()) {
+            String msg = String.format("You already created a slug with '%s' url", url.getUrl());
+            throw new SlugAlreadyCreatedException(msg);
+        }
+
+        String slug = "";
+        if(url.getCustomSlug() != null) {
+            Optional<Url> slugExists = urlRepository.findByCustomSlug(url.getCustomSlug());
+            if(slugExists.isPresent()) {
+                String msg = String.format("Slug '%s' already exists", url.getCustomSlug());
+                throw new SlugAlreadyExistsException(msg);
+            }
+
+            slug = url.getCustomSlug();
+        }
+
+        if (url.getExpiresAt() != null) {
+            OffsetDateTime fiveMin = OffsetDateTime.now(ZoneOffset.UTC).plusMinutes(5);
+            if(url.getExpiresAt().isBefore(fiveMin)) throw new InvalidUrlExpiresAtException("Expires at must be at least five minutes in the future");
+        }
 
         long id = ((Number) entityManager
                 .createNativeQuery("SELECT nextval('url_seq')")
                 .getSingleResult()).longValue();
 
-        String shortUrl = Base62Converter.GenerateShortURL(id);
-        Url newUrl = new Url(id, url, shortUrl, null);
-        urlRepository.save(newUrl);
+        if(slug.isEmpty()) {
+            slug = Base62Converter.GenerateShortURL(id);
+        }
 
-        return newUrl;
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
+        url.setId(id);
+        url.setUser(user);
+        url.setCustomSlug(slug);
+        url.setExpiresAt(url.getExpiresAt());
+
+        return urlRepository.save(url);
     }
 }
