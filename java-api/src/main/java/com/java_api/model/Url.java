@@ -3,6 +3,8 @@ package com.java_api.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,14 +24,43 @@ public class Url {
             allocationSize = 1
     )
     @EqualsAndHashCode.Include
-    private Long id;
+    private Long id; // CREATE SEQUENCE url_seq START WITH 1 INCREMENT BY 1
 
     @Column(columnDefinition = "TEXT", unique = true)
     private String url;
 
-    @Column(name = "short_url", unique = true)
-    private String shortUrl;
+    @Column(name = "custom_slug", unique = true)
+    private String customSlug;
 
-    @ManyToMany(mappedBy = "urls")
-    private List<User> users = new ArrayList<>();
+    @Column(name = "click_count")
+    private long clickCount;
+
+    @Column(name = "max_click_count")
+    private Long maxClickCount;
+
+    @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private Boolean active;
+
+    @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "TIMESTAMPTZ")
+    private OffsetDateTime createdAt;
+
+    @Column(name = "expires_at", nullable = false, columnDefinition = "TIMESTAMPTZ")
+    private OffsetDateTime expiresAt;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false, updatable = false)
+    private User user;
+
+    @PrePersist
+    protected void onCreate() {
+        if(this.createdAt == null) {
+            this.createdAt = OffsetDateTime.now(ZoneOffset.UTC);
+        }
+
+        if(this.expiresAt == null) {
+            this.expiresAt = OffsetDateTime.now(ZoneOffset.UTC).plusDays(7);
+        }
+
+        this.active = true;
+    }
 }

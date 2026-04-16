@@ -35,12 +35,7 @@ public class User implements UserDetails {
 
     private String password;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_url",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "url_id")
-    )
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Url> urls = new ArrayList<>();
 
     @CreatedDate
@@ -54,7 +49,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.email;
+        return this.id.toString();
     }
 
     @Override

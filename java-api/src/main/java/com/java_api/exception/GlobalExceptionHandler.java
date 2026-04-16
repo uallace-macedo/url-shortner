@@ -1,7 +1,6 @@
 package com.java_api.exception;
 
-import com.java_api.exception.custom.UserEmailAlreadyTakenException;
-import com.java_api.exception.custom.WrongCredentialsException;
+import com.java_api.exception.custom.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -45,7 +44,51 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UserEmailAlreadyTakenException.class)
-    public ResponseEntity<ExceptionResponse> handleInternalExceptions(UserEmailAlreadyTakenException ex, WebRequest wr) {
+    public ResponseEntity<ExceptionResponse> handleUserExceptions(UserEmailAlreadyTakenException ex, WebRequest wr) {
+        ExceptionResponse response = new ExceptionResponse(
+                LocalDateTime.now(),
+                Collections.singletonList(ex.getMessage()),
+                wr.getDescription(false)
+        );
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleUserExceptions(UserNotFoundException ex, WebRequest wr) {
+        ExceptionResponse response = new ExceptionResponse(
+                LocalDateTime.now(),
+                Collections.singletonList(ex.getMessage()),
+                wr.getDescription(false)
+        );
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(InvalidUrlExpiresAtException.class)
+    public ResponseEntity<ExceptionResponse> handleUrlExceptions(InvalidUrlExpiresAtException ex, WebRequest wr) {
+        ExceptionResponse response = new ExceptionResponse(
+                LocalDateTime.now(),
+                Collections.singletonList(ex.getMessage()),
+                wr.getDescription(false)
+        );
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(SlugAlreadyCreatedException.class)
+    public ResponseEntity<ExceptionResponse> handleUrlExceptions(SlugAlreadyCreatedException ex, WebRequest wr) {
+        ExceptionResponse response = new ExceptionResponse(
+                LocalDateTime.now(),
+                Collections.singletonList(ex.getMessage()),
+                wr.getDescription(false)
+        );
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(SlugAlreadyExistsException.class)
+    public ResponseEntity<ExceptionResponse> handleUrlExceptions(SlugAlreadyExistsException ex, WebRequest wr) {
         ExceptionResponse response = new ExceptionResponse(
                 LocalDateTime.now(),
                 Collections.singletonList(ex.getMessage()),

@@ -8,16 +8,25 @@ public class UrlMapper {
         return new UrlDTO(
                 url.getId(),
                 url.getUrl(),
-                url.getShortUrl()
+                url.getCustomSlug(),
+                url.getCreatedAt(),
+                url.getExpiresAt(),
+                url.getClickCount(),
+                url.getMaxClickCount(),
+                url.getActive()
         );
     }
 
     public static Url toModel(UrlDTO urlDTO) {
-        return new Url(
-                urlDTO.id(),
-                urlDTO.url(),
-                urlDTO.shortUrl(),
-                null
-        );
+        Url url = new Url();
+        url.setId(urlDTO.id());
+        url.setUrl(urlDTO.url());
+        url.setCustomSlug(urlDTO.customSlug());
+        url.setCreatedAt(urlDTO.createdAt());
+        url.setExpiresAt(urlDTO.expiresAt());
+        url.setClickCount(urlDTO.clickCount());
+        url.setMaxClickCount(urlDTO.maxClickCount());
+        url.setActive(urlDTO.active());
+        return url;
     }
 }
