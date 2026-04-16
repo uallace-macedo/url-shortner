@@ -24,7 +24,6 @@ public class UrlController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<?> create(@Valid @RequestBody UrlRequestDTO urlRequestDTO, Authentication auth) {
-        System.out.println("DTO: " + urlRequestDTO);
         String subj = auth.getName();
         UUID userId = UUID.fromString(subj);
 
