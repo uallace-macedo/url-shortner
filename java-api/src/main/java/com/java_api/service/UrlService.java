@@ -1,6 +1,7 @@
 package com.java_api.service;
 
-import com.java_api.exception.custom.*;
+import com.java_api.exception.custom.url.*;
+import com.java_api.exception.custom.user.UserNotFoundException;
 import com.java_api.model.User;
 import com.java_api.repository.UserRepository;
 import com.java_api.utils.Base62Converter;
@@ -15,14 +16,14 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
 public class UrlService {
+    private final Pattern SLUG_PATTERN = Pattern.compile("^[a-zA-Z0-9_-]{3,30}$");
     private final UrlRepository urlRepository;
     private final UserRepository userRepository;
     private final EntityManager entityManager;
@@ -37,8 +38,7 @@ public class UrlService {
 
         String slug = "";
         if(url.getCustomSlug() != null) {
-            Optional<Url> slugExists = urlRepository.findByCustomSlug(url.getCustomSlug());
-            if(slugExists.isPresent()) {
+            if(urlRepository.existsByCustomSlug(url.getCustomSlug())) {
                 String msg = String.format("Slug '%s' already exists", url.getCustomSlug());
                 throw new SlugAlreadyExistsException(msg);
             }
@@ -73,12 +73,29 @@ public class UrlService {
     }
 
     public void delete(UUID userId, String strId) {
+        Url url = verifyUrlById(userId, strId);
+        urlRepository.delete(url);
+    }
+
+    @Transactional
+    public void patch(UUID userId, String strId, String newSlug) {
+        Url url = verifyUrlById(userId, strId);
+
+        if(urlRepository.existsByCustomSlug(newSlug)) {
+            String msg = String.format("Slug '%s' already exists", newSlug);
+            throw new SlugAlreadyExistsException(msg);
+        }
+
+        url.setCustomSlug(newSlug);
+    }
+
+    private Url verifyUrlById(UUID userId, String strId) {
         try {
             Long longId = Long.parseLong(strId);
             Url url = urlRepository.findById(longId).orElseThrow(() -> new UrlNotFoundException("URL not found"));
             if(!url.getUser().getId().equals(userId)) throw new InvalidUrlOwnershipException("This URL is not yours");
-            urlRepository.delete(url);
-        } catch (NumberFormatException e) {
+            return url;
+        } catch(NumberFormatException e) {
             throw new InvalidUrlIdException("Please provide a valid URL id");
         }
     }
