@@ -9,6 +9,8 @@ import com.java_api.repository.UserRepository;
 import com.java_api.utils.Base62Converter;
 import com.java_api.model.Url;
 import com.java_api.repository.UrlRepository;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
@@ -16,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -65,5 +69,9 @@ public class UrlService {
         url.setExpiresAt(url.getExpiresAt());
 
         return urlRepository.save(url);
+    }
+
+    public Slice<Url> list(UUID userId, Pageable pageable) {
+        return urlRepository.findByUserId(userId, pageable);
     }
 }
