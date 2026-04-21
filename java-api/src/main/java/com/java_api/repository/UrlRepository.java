@@ -10,6 +10,6 @@ import java.util.UUID;
 
 public interface UrlRepository extends JpaRepository<Url, Long> {
     Optional<Url> findByUrlAndUserId(String url, UUID userId);
-    Optional<Url> findByCustomSlug(String customSlug);
     Slice<Url> findByUserId(UUID userId, Pageable pageable);
+    boolean existsByCustomSlug(String customSlug);
 }
