@@ -65,6 +65,13 @@ public class UrlController {
         );
     }
 
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<?> delete(@PathVariable("id") String id, Authentication auth) {
+        UUID userId = getUserId(auth);
+        urlService.delete(userId, id);
+        return ResponseEntity.noContent().build();
+    }
+
     private UUID getUserId(Authentication auth) {
         String subj = auth.getName();
         return UUID.fromString(subj);
