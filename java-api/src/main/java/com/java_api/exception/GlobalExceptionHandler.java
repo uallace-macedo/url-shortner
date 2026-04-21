@@ -1,6 +1,7 @@
 package com.java_api.exception;
 
 import com.java_api.exception.custom.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -96,6 +97,39 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(UrlNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleUrlExceptions(UrlNotFoundException ex, WebRequest wr) {
+        ExceptionResponse response = new ExceptionResponse(
+                LocalDateTime.now(),
+                Collections.singletonList(ex.getMessage()),
+                wr.getDescription(false)
+        );
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(InvalidUrlIdException.class)
+    public ResponseEntity<ExceptionResponse> handleUrlExceptions(InvalidUrlIdException ex, WebRequest wr) {
+        ExceptionResponse response = new ExceptionResponse(
+                LocalDateTime.now(),
+                Collections.singletonList(ex.getMessage()),
+                wr.getDescription(false)
+        );
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(InvalidUrlOwnershipException.class)
+    public ResponseEntity<ExceptionResponse> handleUrlExceptions(InvalidUrlOwnershipException ex, WebRequest wr) {
+        ExceptionResponse response = new ExceptionResponse(
+                LocalDateTime.now(),
+                Collections.singletonList(ex.getMessage()),
+                wr.getDescription(false)
+        );
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 
     @ExceptionHandler(WrongCredentialsException.class)
