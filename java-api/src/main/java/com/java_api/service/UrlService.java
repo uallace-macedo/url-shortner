@@ -1,9 +1,6 @@
 package com.java_api.service;
 
-import com.java_api.exception.custom.InvalidUrlExpiresAtException;
-import com.java_api.exception.custom.SlugAlreadyCreatedException;
-import com.java_api.exception.custom.SlugAlreadyExistsException;
-import com.java_api.exception.custom.UserNotFoundException;
+import com.java_api.exception.custom.*;
 import com.java_api.model.User;
 import com.java_api.repository.UserRepository;
 import com.java_api.utils.Base62Converter;
@@ -73,5 +70,16 @@ public class UrlService {
 
     public Slice<Url> list(UUID userId, Pageable pageable) {
         return urlRepository.findByUserId(userId, pageable);
+    }
+
+    public void delete(UUID userId, String strId) {
+        try {
+            Long longId = Long.parseLong(strId);
+            Url url = urlRepository.findById(longId).orElseThrow(() -> new UrlNotFoundException("URL not found"));
+            if(!url.getUser().getId().equals(userId)) throw new InvalidUrlOwnershipException("This URL is not yours");
+            urlRepository.delete(url);
+        } catch (NumberFormatException e) {
+            throw new InvalidUrlIdException("Please provide a valid URL id");
+        }
     }
 }
