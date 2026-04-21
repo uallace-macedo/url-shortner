@@ -1,6 +1,9 @@
 package com.java_api.exception;
 
-import com.java_api.exception.custom.*;
+import com.java_api.exception.custom.url.*;
+import com.java_api.exception.custom.user.UserEmailAlreadyTakenException;
+import com.java_api.exception.custom.user.UserNotFoundException;
+import com.java_api.exception.custom.user.WrongCredentialsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -112,6 +115,17 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidUrlIdException.class)
     public ResponseEntity<ExceptionResponse> handleUrlExceptions(InvalidUrlIdException ex, WebRequest wr) {
+        ExceptionResponse response = new ExceptionResponse(
+                LocalDateTime.now(),
+                Collections.singletonList(ex.getMessage()),
+                wr.getDescription(false)
+        );
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(InvalidSlugException.class)
+    public ResponseEntity<ExceptionResponse> handleUrlExceptions(InvalidSlugException ex, WebRequest wr) {
         ExceptionResponse response = new ExceptionResponse(
                 LocalDateTime.now(),
                 Collections.singletonList(ex.getMessage()),

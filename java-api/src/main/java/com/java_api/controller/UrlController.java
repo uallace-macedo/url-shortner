@@ -1,12 +1,14 @@
 package com.java_api.controller;
 
 import com.java_api.controller.dto.url.PageResponseDTO;
+import com.java_api.controller.dto.url.UrlChangeSlugDTO;
 import com.java_api.controller.dto.url.UrlDTO;
 import com.java_api.controller.dto.url.UrlRequestDTO;
 import com.java_api.controller.mapper.UrlMapper;
 import com.java_api.model.Url;
 import com.java_api.service.UrlService;
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.web.PageableDefault;
@@ -69,6 +71,17 @@ public class UrlController {
     public ResponseEntity<?> delete(@PathVariable("id") String id, Authentication auth) {
         UUID userId = getUserId(auth);
         urlService.delete(userId, id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping(value = "/{id}")
+    public ResponseEntity<?> patch(
+            @PathVariable("id") String id,
+            @Valid @RequestBody UrlChangeSlugDTO urlChangeSlugDTO,
+            Authentication auth
+    ) {
+        UUID userId = getUserId(auth);
+        urlService.patch(userId, id, urlChangeSlugDTO.newSlug());
         return ResponseEntity.noContent().build();
     }
 

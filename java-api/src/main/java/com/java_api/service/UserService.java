@@ -2,8 +2,8 @@ package com.java_api.service;
 
 import com.java_api.controller.dto.user.UserRegisterRequest;
 import com.java_api.controller.dto.user.UserLoginRequest;
-import com.java_api.exception.custom.UserEmailAlreadyTakenException;
-import com.java_api.exception.custom.WrongCredentialsException;
+import com.java_api.exception.custom.user.UserEmailAlreadyTakenException;
+import com.java_api.exception.custom.user.WrongCredentialsException;
 import com.java_api.model.User;
 import com.java_api.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
