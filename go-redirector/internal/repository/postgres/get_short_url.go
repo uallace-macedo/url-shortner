@@ -7,16 +7,16 @@ import (
 	"github.com/uallace-macedo/url-shortner/go-redirector/internal/model"
 )
 
-func (r *postgresRepository) GetShortUrl(ctx context.Context, shortUrl string) (*model.UrlModel, error) {
-	log.Println("GET SHORT URL: ", shortUrl)
+func (r *postgresRepository) GetShortUrl(ctx context.Context, custom_slug string) (*model.UrlModel, error) {
+	log.Println("GET SHORT URL: ", custom_slug)
 	query := `
-		SELECT id, url, short_url
+		SELECT id, url, custom_slug, click_count, max_click_count
 		FROM urls
-		WHERE short_url = $1
+		WHERE custom_slug = $1
 	`
 
 	var url model.UrlModel
-	if err := r.db.GetContext(ctx, &url, query, shortUrl); err != nil {
+	if err := r.db.GetContext(ctx, &url, query, custom_slug); err != nil {
 		return nil, err
 	}
 
