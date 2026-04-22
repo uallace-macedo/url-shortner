@@ -16,7 +16,7 @@ services:
       timeout: 5s
       retries: 5
 
-  url-shortener-redis:
+  url-shortner-redis:
     container_name: url-shortner-redis
     image: redis:7-alpine
     ports:
