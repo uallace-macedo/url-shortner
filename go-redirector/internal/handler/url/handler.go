@@ -1,8 +1,6 @@
 package url
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/uallace-macedo/url-shortner/go-redirector/internal/services/url"
 )
@@ -23,7 +21,7 @@ func NewUrlHandler(api *gin.Engine, service url.UrlService) *urlHandler {
 	}
 }
 
-func (h *urlHandler) RouteList() {
-	h.api.GET("/favicon.ico", func(c *gin.Context) { c.Status(http.StatusNoContent) })
+func (h *urlHandler) RouteList(rateLimiter gin.HandlerFunc) {
+	h.api.Use(rateLimiter)
 	h.api.GET("/:"+shortUrlParam, h.redirect)
 }

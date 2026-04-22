@@ -15,5 +15,5 @@ func (h *urlHandler) redirect(c *gin.Context) {
 		return
 	}
 
-	c.Redirect(http.StatusMovedPermanently, v)
+	c.Redirect(http.StatusTemporaryRedirect, v)
 }
