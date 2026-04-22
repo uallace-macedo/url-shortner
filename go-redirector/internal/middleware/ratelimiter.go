@@ -21,23 +21,14 @@ func NewRateLimiter(rL *RateLimiter) gin.HandlerFunc {
 
 func (rL *RateLimiter) allow(ctx context.Context, key string) bool {
 	pipe := rL.Client.Pipeline()
-
-	// 1. Você guarda o COMANDO, não o resultado.
-	// Nesse momento, 'incrCmd' está vazio.
 	incrCmd := pipe.Incr(ctx, key)
 
-	// 2. AGORA você envia tudo para o Redis.
 	_, err := pipe.Exec(ctx)
 	if err != nil && err != redis.Nil {
 		return true
 	}
 
-	// 3. AGORA você lê o que o Redis respondeu.
-	// O valor real (1, 2, 3...) só existe aqui.
 	incr := incrCmd.Val()
-
-	// 4. Se for o primeiro hit, precisa de um segundo comando ou
-	// usar a lógica do TTL que te mandei antes.
 	if incr == 1 {
 		rL.Client.Expire(ctx, key, rL.Window)
 	}
