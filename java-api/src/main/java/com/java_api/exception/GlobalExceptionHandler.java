@@ -135,8 +135,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(response);
     }
 
-    @ExceptionHandler(InvalidUrlOwnershipException.class)
-    public ResponseEntity<ExceptionResponse> handleUrlExceptions(InvalidUrlOwnershipException ex, WebRequest wr) {
+    @ExceptionHandler(UrlForbiddenException.class)
+    public ResponseEntity<ExceptionResponse> handleUrlExceptions(UrlForbiddenException ex, WebRequest wr) {
         ExceptionResponse response = new ExceptionResponse(
                 LocalDateTime.now(),
                 Collections.singletonList(ex.getMessage()),

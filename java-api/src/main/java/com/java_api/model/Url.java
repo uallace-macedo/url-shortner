@@ -47,6 +47,9 @@ public class Url {
     @Column(name = "expires_at", nullable = false, columnDefinition = "TIMESTAMPTZ")
     private OffsetDateTime expiresAt;
 
+    @OneToMany(mappedBy = "url", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Click> clicks;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private User user;

@@ -1,11 +1,9 @@
 package com.java_api.controller;
 
-import com.java_api.controller.dto.url.PageResponseDTO;
-import com.java_api.controller.dto.url.UrlChangeSlugDTO;
-import com.java_api.controller.dto.url.UrlDTO;
-import com.java_api.controller.dto.url.UrlRequestDTO;
+import com.java_api.controller.dto.url.*;
 import com.java_api.controller.mapper.UrlMapper;
 import com.java_api.model.Url;
+import com.java_api.service.ClickService;
 import com.java_api.service.UrlService;
 import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
@@ -26,23 +24,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UrlController {
     private final UrlService urlService;
-
-    @PostMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<?> create(@Valid @RequestBody UrlRequestDTO urlRequestDTO, Authentication auth) {
-        UUID userId = getUserId(auth);
-
-        Url url = new Url();
-        url.setUrl(urlRequestDTO.url());
-        url.setCustomSlug(urlRequestDTO.customSlug());
-        url.setMaxClickCount(urlRequestDTO.maxClickCount());
-        url.setExpiresAt(urlRequestDTO.expiresAt());
-
-        Url newUrl = urlService.create(userId, url);
-        return ResponseEntity.status(HttpStatus.CREATED).body(UrlMapper.toDTO(newUrl));
-    }
+    private final ClickService clickService;
 
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -65,6 +47,36 @@ public class UrlController {
         return ResponseEntity.ok(
                 new PageResponseDTO<>(slice)
         );
+    }
+
+    @GetMapping(
+            value = "/{id}/stats",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<?> getStats(
+            @PathVariable("id") String id,
+            Authentication auth
+    ) {
+        UUID userId = getUserId(auth);
+        UrlStatsDTO urlStatsDTO = clickService.getStats(id, userId);
+        return ResponseEntity.ok(urlStatsDTO);
+    }
+
+    @PostMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<?> create(@Valid @RequestBody UrlRequestDTO urlRequestDTO, Authentication auth) {
+        UUID userId = getUserId(auth);
+
+        Url url = new Url();
+        url.setUrl(urlRequestDTO.url());
+        url.setCustomSlug(urlRequestDTO.customSlug());
+        url.setMaxClickCount(urlRequestDTO.maxClickCount());
+        url.setExpiresAt(urlRequestDTO.expiresAt());
+
+        Url newUrl = urlService.create(userId, url);
+        return ResponseEntity.status(HttpStatus.CREATED).body(UrlMapper.toDTO(newUrl));
     }
 
     @DeleteMapping(value = "/{id}")
