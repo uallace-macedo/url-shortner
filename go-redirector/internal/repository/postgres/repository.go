@@ -9,7 +9,8 @@ import (
 )
 
 type PostgresRepository interface {
-	GetShortUrl(context context.Context, shortUrl string) (*model.UrlModel, error)
+	GetUrlByCustomSlug(ctx context.Context, customSlug string) (*model.UrlModel, error)
+	RegisterClick(ctx context.Context, click *model.ClickModel) error
 }
 
 type postgresRepository struct {
