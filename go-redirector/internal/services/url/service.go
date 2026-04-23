@@ -3,11 +3,12 @@ package url
 import (
 	"context"
 
+	"github.com/uallace-macedo/url-shortner/go-redirector/internal/model"
 	"github.com/uallace-macedo/url-shortner/go-redirector/internal/repository/postgres"
 )
 
 type UrlService interface {
-	GetOriginalUrl(ctx context.Context, short_url string) (string, int, error)
+	GetUrlByCustomSlug(ctx context.Context, customSlug string) (*model.UrlModel, int, error)
 }
 
 type urlService struct {
