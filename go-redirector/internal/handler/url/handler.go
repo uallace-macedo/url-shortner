@@ -2,6 +2,7 @@ package url
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/uallace-macedo/url-shortner/go-redirector/internal/services/click"
 	"github.com/uallace-macedo/url-shortner/go-redirector/internal/services/url"
 )
 
@@ -10,14 +11,16 @@ const (
 )
 
 type urlHandler struct {
-	api     *gin.Engine
-	service url.UrlService
+	api          *gin.Engine
+	service      url.UrlService
+	clickService click.ClickService
 }
 
-func NewUrlHandler(api *gin.Engine, service url.UrlService) *urlHandler {
+func NewUrlHandler(api *gin.Engine, service url.UrlService, clickService click.ClickService) *urlHandler {
 	return &urlHandler{
-		api:     api,
-		service: service,
+		api:          api,
+		service:      service,
+		clickService: clickService,
 	}
 }
 
