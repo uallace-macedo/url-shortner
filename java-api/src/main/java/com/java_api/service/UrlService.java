@@ -93,7 +93,7 @@ public class UrlService {
         try {
             Long longId = Long.parseLong(strId);
             Url url = urlRepository.findById(longId).orElseThrow(() -> new UrlNotFoundException("URL not found"));
-            if(!url.getUser().getId().equals(userId)) throw new InvalidUrlOwnershipException("This URL is not yours");
+            if(!url.getUser().getId().equals(userId)) throw new UrlForbiddenException("This URL is not yours");
             return url;
         } catch(NumberFormatException e) {
             throw new InvalidUrlIdException("Please provide a valid URL id");
