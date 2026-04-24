@@ -47,9 +47,10 @@ public class UserController {
                 .sameSite("Lax")
                 .build();
 
-        return ResponseEntity.ok()
+        return ResponseEntity
+                .ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .build();
+                .body(UserMapper.toDTO(user));
     }
 
     @PostMapping("/logout")
