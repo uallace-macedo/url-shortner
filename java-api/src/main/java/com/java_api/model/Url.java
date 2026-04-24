@@ -26,7 +26,7 @@ public class Url {
     @EqualsAndHashCode.Include
     private Long id; // CREATE SEQUENCE url_seq START WITH 1 INCREMENT BY 1
 
-    @Column(columnDefinition = "TEXT", unique = true)
+    @Column(columnDefinition = "TEXT")
     private String url;
 
     @Column(name = "custom_slug", unique = true)
