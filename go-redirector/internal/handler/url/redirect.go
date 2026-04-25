@@ -17,11 +17,11 @@ func (h *urlHandler) redirect(c *gin.Context) {
 	}
 
 	if isBot(c.Request.UserAgent()) {
-		c.Redirect(http.StatusTemporaryRedirect, v.Url)
+		c.Redirect(http.StatusFound, v.Url)
 		return
 	}
 
-	c.Redirect(http.StatusTemporaryRedirect, v.Url)
+	c.Redirect(http.StatusFound, v.Url)
 	go h.clickService.RegisterClick(v.ID, c)
 }
 

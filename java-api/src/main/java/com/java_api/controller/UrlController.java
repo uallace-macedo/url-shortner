@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,7 +19,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/api/v1/urls")
@@ -25,6 +30,7 @@ import java.util.UUID;
 public class UrlController {
     private final UrlService urlService;
     private final ClickService clickService;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -76,6 +82,20 @@ public class UrlController {
         url.setExpiresAt(urlRequestDTO.expiresAt());
 
         Url newUrl = urlService.create(userId, url);
+
+        String key = newUrl.getCustomSlug();
+        Map<String, String> data = new HashMap<>();
+        data.put("id", Long.toString(newUrl.getId()));
+        data.put("url", newUrl.getUrl());
+
+        System.out.println(data);
+
+        try {
+            redisTemplate.opsForHash().putAll(key, data);
+            redisTemplate.expire(key, 1, TimeUnit.MINUTES);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(UrlMapper.toDTO(newUrl));
     }
 

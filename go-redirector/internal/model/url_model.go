@@ -10,4 +10,9 @@ type (
 		ClickCount    int           `db:"click_count"`
 		MaxClickCount sql.NullInt64 `db:"max_click_count"`
 	}
+
+	UrlRedirectResponse struct {
+		ID  int64
+		Url string
+	}
 )
