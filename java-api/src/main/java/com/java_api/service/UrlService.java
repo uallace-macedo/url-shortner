@@ -68,9 +68,7 @@ public class UrlService {
         url.setCustomSlug(slug);
         url.setExpiresAt(url.getExpiresAt());
 
-        Url newUrl = urlRepository.save(url);
-        redisTemplate.opsForValue().set(url.getCustomSlug(), url.getUrl(), 1, TimeUnit.MINUTES);
-        return newUrl;
+        return urlRepository.save(url);
     }
 
     public Slice<Url> list(UUID userId, Pageable pageable) {
