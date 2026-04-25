@@ -8,6 +8,7 @@ import (
 	urlHandl "github.com/uallace-macedo/url-shortner/go-redirector/internal/handler/url"
 	"github.com/uallace-macedo/url-shortner/go-redirector/internal/middleware"
 	pgRepo "github.com/uallace-macedo/url-shortner/go-redirector/internal/repository/postgres"
+	rdRepo "github.com/uallace-macedo/url-shortner/go-redirector/internal/repository/redis"
 	clickServ "github.com/uallace-macedo/url-shortner/go-redirector/internal/services/click"
 	urlServ "github.com/uallace-macedo/url-shortner/go-redirector/internal/services/url"
 )
@@ -16,15 +17,17 @@ func main() {
 	logger := config.NewLogger("")
 	cfg := config.Load()
 
-	pgDb, rClient := cfg.GetDatabases(*logger)
+	pgDb, rDb := cfg.GetDatabases(*logger)
 
 	pgRepo := pgRepo.NewPostgresRepository(pgDb)
-	urlServ := urlServ.NewUrlService(pgRepo)
+	rdRepo := rdRepo.NewRedisRepository(rDb)
+
+	urlServ := urlServ.NewUrlService(pgRepo, rdRepo)
 	clickServ := clickServ.NewClickService(pgRepo)
 
 	rateLimiter := middleware.NewRateLimiter(
 		&middleware.RateLimiter{
-			Client: rClient,
+			Client: rDb,
 			Limit:  3,
 			Window: 10 * time.Second,
 		},
