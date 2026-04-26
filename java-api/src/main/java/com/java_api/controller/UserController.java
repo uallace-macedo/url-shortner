@@ -30,8 +30,21 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody UserRegisterRequest registerData) {
-        UserDTO userDTO = UserMapper.toDTO(userService.register(registerData));
-        return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
+        User user = userService.register(registerData);
+        String token = tokenService.generateToken(user);
+
+        ResponseCookie cookie = ResponseCookie.from("accessToken", token)
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(Duration.ofHours(2))
+                .sameSite("Lax")
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(UserMapper.toDTO(user));
     }
 
     @PostMapping("/login")
