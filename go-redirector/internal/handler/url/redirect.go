@@ -11,7 +11,7 @@ func (h *urlHandler) redirect(c *gin.Context) {
 	shortUrl := c.Param(shortUrlParam)
 	v, code, err := h.service.GetUrlByCustomSlug(c, shortUrl)
 
-	if err != nil {
+	if err != nil || v == nil {
 		c.AbortWithStatusJSON(code, gin.H{"error": "URL not found"})
 		return
 	}

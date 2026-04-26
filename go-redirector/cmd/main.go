@@ -22,7 +22,7 @@ func main() {
 	pgRepo := pgRepo.NewPostgresRepository(pgDb)
 	rdRepo := rdRepo.NewRedisRepository(rDb)
 
-	urlServ := urlServ.NewUrlService(pgRepo, rdRepo)
+	urlServ := urlServ.NewUrlService(pgRepo, rdRepo, rDb)
 	clickServ := clickServ.NewClickService(pgRepo)
 
 	rateLimiter := middleware.NewRateLimiter(
