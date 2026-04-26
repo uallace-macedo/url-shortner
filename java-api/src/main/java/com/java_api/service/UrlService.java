@@ -81,15 +81,27 @@ public class UrlService {
     }
 
     @Transactional
-    public void patch(UUID userId, String strId, String newSlug) {
+    public void patch(UUID userId, String strId, Url newUrl) {
         Url url = verifyUrlById(userId, strId);
 
-        if(urlRepository.existsByCustomSlug(newSlug)) {
-            String msg = String.format("Slug '%s' already exists", newSlug);
-            throw new SlugAlreadyExistsException(msg);
+        if (newUrl.getCustomSlug() != null) {
+            String newSlug = newUrl.getCustomSlug();
+
+            if(urlRepository.existsByCustomSlug(newSlug)) {
+                String msg = String.format("Slug '%s' already exists", newSlug);
+                throw new SlugAlreadyExistsException(msg);
+            }
+
+            url.setCustomSlug(newSlug);
         }
 
-        url.setCustomSlug(newSlug);
+        if (newUrl.getMaxClickCount() != null && newUrl.getMaxClickCount() > 0 && newUrl.getClickCount() == 0) {
+            url.setMaxClickCount(newUrl.getMaxClickCount());
+        }
+
+        if (newUrl.getActive() != null) {
+            url.setActive(newUrl.getActive());
+        }
     }
 
     private Url verifyUrlById(UUID userId, String strId) {
