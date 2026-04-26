@@ -20,20 +20,13 @@ func NewRateLimiter(rL *RateLimiter) gin.HandlerFunc {
 }
 
 func (rL *RateLimiter) allow(ctx context.Context, key string) bool {
-	pipe := rL.Client.Pipeline()
-	incrCmd := pipe.Incr(ctx, key)
+	count, _ := rL.Client.Incr(ctx, key).Result()
 
-	_, err := pipe.Exec(ctx)
-	if err != nil && err != redis.Nil {
-		return true
-	}
-
-	incr := incrCmd.Val()
-	if incr == 1 {
+	if count == 1 {
 		rL.Client.Expire(ctx, key, rL.Window)
 	}
 
-	return incr <= int64(rL.Limit)
+	return count <= int64(rL.Limit)
 }
 
 func (rL *RateLimiter) rateLimiterMiddleware() gin.HandlerFunc {
