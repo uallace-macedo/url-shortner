@@ -6,11 +6,9 @@ import com.java_api.model.Url;
 import com.java_api.service.ClickService;
 import com.java_api.service.UrlService;
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -93,9 +91,8 @@ public class UrlController {
         try {
             redisTemplate.opsForHash().putAll(key, data);
             redisTemplate.expire(key, 1, TimeUnit.MINUTES);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception ignored) {}
+
         return ResponseEntity.status(HttpStatus.CREATED).body(UrlMapper.toDTO(newUrl));
     }
 
@@ -109,11 +106,17 @@ public class UrlController {
     @PatchMapping(value = "/{id}")
     public ResponseEntity<?> patch(
             @PathVariable("id") String id,
-            @Valid @RequestBody UrlChangeSlugDTO urlChangeSlugDTO,
+            @Valid @RequestBody UrlUpdateDTO urlUpdateDTO,
             Authentication auth
     ) {
         UUID userId = getUserId(auth);
-        urlService.patch(userId, id, urlChangeSlugDTO.newSlug());
+
+        Url newUrl = new Url();
+        newUrl.setCustomSlug(urlUpdateDTO.newSlug());
+        newUrl.setMaxClickCount(urlUpdateDTO.maxClickCount());
+        newUrl.setActive(urlUpdateDTO.active());
+
+        urlService.patch(userId, id, newUrl);
         return ResponseEntity.noContent().build();
     }
 
