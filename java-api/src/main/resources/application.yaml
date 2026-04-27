@@ -3,18 +3,21 @@ spring:
     name: java-api
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${PSQL_HOST}:${PSQL_EXTERNAL_PORT}/${PSQL_DATABASE}
+    url: jdbc:postgresql://${PSQL_HOST}:${PSQL_PORT}/${PSQL_DBNM}
     username: ${PSQL_USER}
-    password: ${PSQL_PASSWORD}
+    password: ${PSQL_PSWD}
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
   data:
     redis:
-      host: ${REDIS_HOST:localhost}
-      port: ${REDIS_EXTERNAL_PORT:6379}
-      password: ${REDIS_PASSWORD}
+      host: ${RDS_HOST:localhost}
+      port: ${RDS_PORT:6379}
+      password: ${RDS_PSWD}
       connect-timeout: 2s
 
 server:
@@ -24,3 +27,6 @@ api:
   security:
     token:
       secret: ${JAVA_JWT_SECRET:secret_jwt}
+
+client:
+  host: ${CLIENT_HOST}:${CLIENT_PORT}

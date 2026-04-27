@@ -39,5 +39,5 @@ func main() {
 	urlHandl := urlHandl.NewUrlHandler(r, urlServ, clickServ)
 	urlHandl.RouteList(rateLimiter)
 
-	r.Run(cfg.APIPort)
+	r.Run(":" + cfg.APIPort)
 }

@@ -1,6 +1,5 @@
 package com.java_api.infra.security;
 
-import com.java_api.model.User;
 import com.java_api.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

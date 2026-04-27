@@ -29,15 +29,15 @@ func Load() *Config {
 	return &Config{
 		APIPort: getEnv("GO_REDIRECTOR_PORT", ":4001"),
 
-		PSQLHost:     getEnv("PSQL_HOST", ""),
 		PSQLUser:     getEnv("PSQL_USER", ""),
-		PSQLPassword: getEnv("PSQL_PASSWORD", ""),
-		PSQLDatabase: getEnv("PSQL_DATABASE", ""),
-		PSQLPort:     getEnv("PSQL_EXTERNAL_PORT", ""),
+		PSQLPassword: getEnv("PSQL_PSWD", ""),
+		PSQLHost:     getEnv("PSQL_HOST", ""),
+		PSQLPort:     getEnv("PSQL_PORT", ""),
+		PSQLDatabase: getEnv("PSQL_DBNM", ""),
 
-		REDISHost:     getEnv("REDIS_HOST", ""),
-		REDISPassword: getEnv("REDIS_PASSWORD", ""),
-		REDISPort:     getEnv("REDIS_EXTERNAL_PORT", "6379"),
+		REDISHost:     getEnv("RDS_HOST", ""),
+		REDISPassword: getEnv("RDS_PSWD", ""),
+		REDISPort:     getEnv("RDS_PORT", "6379"),
 	}
 }
 
