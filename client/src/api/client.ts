@@ -1,5 +1,5 @@
-export const API_BASE_URL = 'http://localhost:4000/api/v1';
-export const REDIRECTOR_BASE_URL = 'http://localhost:4001';
+export const API_BASE_URL = import.meta.env.VITE_JAVA_API + "/api/v1";
+export const REDIRECTOR_BASE_URL = import.meta.env.VITE_GO_RDT;
 
 export interface ApiError {
   timestamp: string;
