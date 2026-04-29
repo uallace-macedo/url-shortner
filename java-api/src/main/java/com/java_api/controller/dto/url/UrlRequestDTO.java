@@ -1,15 +1,20 @@
 package com.java_api.controller.dto.url;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.java_api.infra.validation.ValidUrl;
+import com.java_api.infra.validation.ValidationGroup;
+import jakarta.validation.GroupSequence;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.time.OffsetDateTime;
 
+@GroupSequence({UrlRequestDTO.class, ValidationGroup.class})
 public record UrlRequestDTO(
         @NotBlank(message = "URL cannot be void")
+        @Pattern(regexp = "^https?://.*", message = "URL must start with 'https://' or 'http://'")
+        @ValidUrl(groups = ValidationGroup.class)
         String url,
 
         @Size(min = 5, max = 30, message = "Custom slug must be between 5 & 30 characters")
