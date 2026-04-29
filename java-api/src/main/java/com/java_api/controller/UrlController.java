@@ -86,8 +86,6 @@ public class UrlController {
         data.put("id", Long.toString(newUrl.getId()));
         data.put("url", newUrl.getUrl());
 
-        System.out.println(data);
-
         try {
             redisTemplate.opsForHash().putAll(key, data);
             redisTemplate.expire(key, 1, TimeUnit.MINUTES);
