@@ -85,6 +85,10 @@ public class UrlController {
         Map<String, String> data = new HashMap<>();
         data.put("id", Long.toString(newUrl.getId()));
         data.put("url", newUrl.getUrl());
+        data.put("click_count", Long.toString(newUrl.getClickCount()));
+        data.put("max_click_count", Long.toString(newUrl.getMaxClickCount()));
+        data.put("expires_at", newUrl.getExpiresAt().toString());
+        data.put("active", newUrl.getActive().toString());
 
         try {
             redisTemplate.opsForHash().putAll(key, data);

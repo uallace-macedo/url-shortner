@@ -3,6 +3,7 @@ package url
 import (
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,7 +13,18 @@ func (h *urlHandler) redirect(c *gin.Context) {
 	v, code, err := h.service.GetUrlByCustomSlug(c, shortUrl)
 
 	if err != nil || v == nil {
-		c.AbortWithStatusJSON(code, gin.H{"error": "URL not found"})
+		c.AbortWithStatusJSON(code, gin.H{
+			"timestamp": time.Now().UTC(),
+			"error":     "URL not found",
+		})
+		return
+	}
+
+	if !v.CanAccess() {
+		c.AbortWithStatusJSON(http.StatusGone, gin.H{
+			"timestamp": time.Now().UTC(),
+			"error":     "URL not accessible",
+		})
 		return
 	}
 
