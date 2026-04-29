@@ -15,4 +15,5 @@ public interface UrlRepository extends JpaRepository<Url, Long> {
     Slice<Url> findByUserId(UUID userId, Pageable pageable);
     boolean existsByCustomSlug(String customSlug);
     void deleteByExpiresAtBefore(OffsetDateTime today);
+    void deleteByLastClickedAtBefore(OffsetDateTime date);
 }

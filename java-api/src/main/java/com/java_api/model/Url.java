@@ -47,6 +47,9 @@ public class Url {
     @Column(name = "expires_at", columnDefinition = "TIMESTAMPTZ")
     private OffsetDateTime expiresAt;
 
+    @Column(name = "last_clicked_at", columnDefinition = "TIMESTAMPTZ")
+    private OffsetDateTime lastClickedAt;
+
     @OneToMany(mappedBy = "url", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Click> clicks;
 
