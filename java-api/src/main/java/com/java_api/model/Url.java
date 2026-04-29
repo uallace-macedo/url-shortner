@@ -24,7 +24,7 @@ public class Url {
             allocationSize = 1
     )
     @EqualsAndHashCode.Include
-    private Long id; // CREATE SEQUENCE url_seq START WITH 1 INCREMENT BY 1
+    private Long id;
 
     @Column(columnDefinition = "TEXT")
     private String url;
@@ -44,7 +44,7 @@ public class Url {
     @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "TIMESTAMPTZ")
     private OffsetDateTime createdAt;
 
-    @Column(name = "expires_at", nullable = false, columnDefinition = "TIMESTAMPTZ")
+    @Column(name = "expires_at", columnDefinition = "TIMESTAMPTZ")
     private OffsetDateTime expiresAt;
 
     @OneToMany(mappedBy = "url", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -58,10 +58,6 @@ public class Url {
     protected void onCreate() {
         if(this.createdAt == null) {
             this.createdAt = OffsetDateTime.now(ZoneOffset.UTC);
-        }
-
-        if(this.expiresAt == null) {
-            this.expiresAt = OffsetDateTime.now(ZoneOffset.UTC).plusDays(7);
         }
 
         this.active = true;
