@@ -16,7 +16,6 @@ public class UrlScheduler {
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
     public void removeOutdatedUrls() {
-        urlRepository.deleteByExpiresAtBefore(OffsetDateTime.now());
         urlRepository.deleteByLastClickedAtBefore(OffsetDateTime.now().minusDays(15));
     }
 }

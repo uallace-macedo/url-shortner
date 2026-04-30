@@ -1,7 +1,6 @@
 package com.java_api.controller;
 
 import com.java_api.controller.dto.user.UserRegisterRequest;
-import com.java_api.controller.dto.user.UserDTO;
 import com.java_api.controller.dto.user.UserLoginRequest;
 import com.java_api.controller.mapper.UserMapper;
 import com.java_api.infra.security.TokenService;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/v1/users")

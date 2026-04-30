@@ -8,7 +8,7 @@ import (
 
 func (r *postgresRepository) GetUrlByCustomSlug(ctx context.Context, customSlug string) (*model.UrlModel, error) {
 	query := `
-		SELECT id, url, custom_slug, click_count, max_click_count
+		SELECT id, url, custom_slug, click_count, max_click_count, expires_at, active
 		FROM urls
 		WHERE custom_slug = $1
 	`

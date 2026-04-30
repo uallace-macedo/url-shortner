@@ -16,13 +16,8 @@ func (s *urlService) GetUrlByCustomSlug(ctx context.Context, customSlug string) 
 		return nil, http.StatusNotFound, nil
 	}
 
-	response := &model.UrlRedirectResponse{
-		ID:  v.ID,
-		Url: v.Url,
-	}
-
-	s.manageHotCache(ctx, customSlug, response)
-	return response, http.StatusOK, nil
+	s.manageHotCache(ctx, customSlug, v)
+	return v, http.StatusOK, nil
 }
 
 func (s *urlService) manageHotCache(ctx context.Context, customSlug string, resp *model.UrlRedirectResponse) {
@@ -31,8 +26,22 @@ func (s *urlService) manageHotCache(ctx context.Context, customSlug string, resp
 
 	if count == 0 {
 		data := map[string]string{
-			"id":  strconv.Itoa(int(resp.ID)),
-			"url": resp.Url,
+			"id":          strconv.FormatInt(resp.ID, 10),
+			"url":         resp.Url,
+			"click_count": strconv.FormatInt(resp.ClickCount, 10),
+			"active":      strconv.FormatBool(resp.Active),
+		}
+
+		if resp.MaxClickCount.Valid {
+			data["max_click_count"] = strconv.FormatInt(resp.MaxClickCount.Int64, 10)
+		} else {
+			data["max_click_count"] = "null"
+		}
+
+		if resp.ExpiresAt != nil {
+			data["expires_at"] = resp.ExpiresAt.Format(time.RFC3339)
+		} else {
+			data["expires_at"] = "null"
 		}
 
 		redis.HSet(ctx, customSlug, data)
@@ -74,7 +83,11 @@ func (s *urlService) getFromPostgres(ctx context.Context, customSlug string) *mo
 	}
 
 	return &model.UrlRedirectResponse{
-		ID:  v.ID,
-		Url: v.Url,
+		ID:            v.ID,
+		Url:           v.Url,
+		ClickCount:    v.ClickCount,
+		MaxClickCount: v.MaxClickCount,
+		ExpiresAt:     v.ExpiresAt,
+		Active:        v.Active,
 	}
 }
